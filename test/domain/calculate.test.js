@@ -1,17 +1,13 @@
 import { calOper, calculate } from '../../src/domain/calculate';
 
-describe.skip('calculate.js', () => {
+describe('calculate.js', () => {
   test('test', () => {
-    // 123+24*32
-    const input = {
-      num: ['1', '2', '3', '2', '4', '3', '2'],
-      oper: ['+', '*'],
-    };
-    //caloper
-    //1. 24*32
-    //2. 123+result
-    const result = calOper(input);
+    // given
+    const input = [123, '+', 24, '*', 32];
 
-    expect(result).toStrictEqual(['123', '+', '24', '*', '32']);
+    // when
+    const result = calculate(input);
+    // then
+    expect(result).toBe(891);
   });
 });

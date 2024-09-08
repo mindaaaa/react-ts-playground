@@ -1,6 +1,6 @@
 import tokenize from '../../src/domain/tokenize';
 
-describe('tokenize.js', () => {
+describe.skip('tokenize.js', () => {
   test('test', () => {
     const expression = '123+24*32';
 

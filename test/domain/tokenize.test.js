@@ -6,9 +6,19 @@ describe('tokenize.js', () => {
 
     const result = tokenize(expression);
 
-    expect(result).toStrictEqual({
-      num: ['1', '2', '3', '2', '4', '3', '2'],
-      oper: ['+', '*'],
-    });
+    expect(result).toStrictEqual([123, '+', 24, '*', 32]);
+  });
+  test('minda', () => {
+    // given
+    const a = 1;
+    const b = 2;
+
+    // when
+    const result = a + b;
+
+    // then
+    expect(result).toBe(3);
+    // 절대 이게 나오면 안된다!
+    expect(result).not.toBe(42);
   });
 });

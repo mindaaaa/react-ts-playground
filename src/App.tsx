@@ -25,24 +25,6 @@ function App() {
     tokenize(input);
   };
 
-  // 1. 배열을 만든다.
-  const num = []; // token 숫자 넣기
-  const oper = []; // oper 넣어주기
-
-  // 2. 숫자와 연산자를 구분해 저장한다.
-  function tokenize(expr) {
-    for (const char of expr.slice(0, -1)) {
-      if(const expr = '/*-+'.includes(char)){
-        // 앞까지 num에 저장
-        num.push();
-        // 뒤에서 oper에 저장
-      } else{
-        // 계속 num에 저장
-      }
-    }
-    return
-  }
-  
   const handleCalculate = () => {};
 
   // 3. 연산자 우선순위에 따라 계산한다.
@@ -64,9 +46,8 @@ function App() {
         '-': (a, b) => a - b,
       },
     ];
-    reduce (calOper, tokens)
+    reduce(calOper, tokens);
     if (tokens.length === 1) {
-
     }
   }
 

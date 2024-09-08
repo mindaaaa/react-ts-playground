@@ -1,16 +1,18 @@
 const Operator = {};
 
 export default function tokenize(expr) {
-  const num = [];
-  const oper = [];
-
+  const token = [];
+  let lan = '';
   const split = expr.split('');
   for (const char of split) {
     if ('/*-+'.includes(char)) {
-      oper.push(char);
+      token.push(...[Number(lan), char]);
+      lan = '';
     } else {
-      num.push(char);
+      lan += char;
     }
   }
-  return { num, oper };
+
+  token.push(Number(lan));
+  return token;
 }

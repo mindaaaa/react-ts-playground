@@ -1,4 +1,4 @@
-import tokenize from '../../src/domain/tokenize';
+import tokenize from '../../src/utils/tokenize';
 
 describe.skip('tokenize.js', () => {
   test('test', () => {

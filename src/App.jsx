@@ -1,63 +1,35 @@
 import React, { useState } from 'react';
 import './App.css';
-
-// .은 어떻게 해석하지
-
-// 이렇게 해보고 싶은데
-// const [calc, setCalc] = useState({
-//   oper: '',
-//   num: 0,
-//   res: 0,
-// });
-
-// const newNum = Number(value);
-// setCalc(
-//   ...calc,
-//   num: newNum,
-// )
+import tokenize from './utils/tokenize';
+import { calculate } from './utils/calculate';
 
 function App() {
-  const [input, setInput] = useState(0); // 입력값 저장한다.
-  const [res, setRes] = useState(0);
+  const [input, setInput] = useState(''); // 문자열 반환
+  const [result, setResult] = useState(null); // 숫자 반환
 
   const handleInput = (value) => {
     setInput(input + value);
-    tokenize(input);
+    setResult(null);
   };
 
-  const handleCalculate = () => {};
-
-  // 3. 연산자 우선순위에 따라 계산한다.
-  function calOper(tokens, oper) {
-    // 1. 배열 순차탐색
-    // 2. 연산자를 만나면 계산 수행
-    // 3. 연산자를 저장하고
-  }
-
-  // 4. 연산자를 처리하는 함수를 만든다.
-  function calculate(tokens) {
-    const priority = [
-      {
-        '*': (a, b) => a * b,
-        '/': (a, b) => a / b,
-      },
-      {
-        '+': (a, b) => a + b,
-        '-': (a, b) => a - b,
-      },
-    ];
-    reduce(calOper, tokens);
-    if (tokens.length === 1) {
+  const handleCalculate = () => {
+    try {
+      const tokens = tokenize(input);
+      const calResult = calculate(tokens);
+      setResult(calResult);
+    } catch (error) {
+      setResult('Error');
     }
-  }
+  };
 
   const handleClear = () => {
     setInput('');
+    setResult(null);
   };
 
   return (
     <div className='calculator'>
-      <div className='display'>{num}</div>
+      <div className='display'>{result !== null ? result : input}</div>
       <div className='buttons'>
         <button onClick={() => handleInput('7')}>7</button>
         <button onClick={() => handleInput('8')}>8</button>

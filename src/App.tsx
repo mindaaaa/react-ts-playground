@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './App.css';
 import tokenize from './utils/tokenize';
 import { calculate } from './utils/calculate';
 
 function App() {
-  const [input, setInput] = useState(''); // 문자열 반환
-  const [result, setResult] = useState(null); // 숫자 반환
+  const [input, setInput] = useState<string>(''); // 문자열 반환
+  const [result, setResult] = useState<number | null>(null); // 숫자 반환
 
-  const handleInput = (value) => {
+  const handleInput = (value: string): void => {
     setInput(input + value);
     setResult(null);
   };
 
-  const handleCalculate = () => {
+  const handleCalculate = (): void => {
     try {
-      const tokens = tokenize(input);
+      const tokens: (number | string)[] = tokenize(input);
       const calResult = calculate(tokens);
       setResult(calResult);
     } catch (error) {
-      setResult('Error');
+      if (error instanceof Error) console.log(error.message);
     }
   };
 
-  const handleClear = () => {
+  const handleClear = (): void => {
     setInput('');
     setResult(null);
   };

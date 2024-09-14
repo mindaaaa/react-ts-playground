@@ -1,13 +1,15 @@
+type PrimaryOpcode = '*' | '/';
+type SecondaryOpcode = '+' | '-';
 type Operator = (a: number, b: number) => number;
+type Token = number | string;
 
-interface PrimaryOperator {
-  '*': Operator;
-  '/': Operator;
-}
-interface SecondaryOperator {
-  '+': Operator;
-  '-': Operator;
-}
+type PrimaryOperator = {
+  [key in PrimaryOpcode]: Operator;
+};
+
+type SecondaryOperator = {
+  [key in SecondaryOpcode]: Operator;
+};
 
 const priority: [PrimaryOperator, SecondaryOperator] = [
   {
@@ -21,38 +23,65 @@ const priority: [PrimaryOperator, SecondaryOperator] = [
 ];
 
 export function calOper(
-  expr: (number | string)[],
-  oper: PrimaryOperator
-): number[] {
-  // oper 타입이 object[]가 아니래!!
-  const result: number[] = [];
+  expr: Token[],
+  oper: PrimaryOperator | SecondaryOperator
+): Token[] {
+  const result: Token[] = [];
+
   let operator: Operator | null = null;
+
   for (const token of expr) {
-    if (typeof token === 'string') {
-      if (token in oper) {
-        operator = oper[token]; // 연산자면 가져오고 // 타입 정의가... for...of 절이라 안됨 ㅠ
+    if (isPrimaryOperator(oper)) {
+      if (isPrimaryOpcode(token) && typeof token === 'string') {
+        if (token in oper) {
+          operator = oper[token];
+        }
+      } else if (typeof token === 'number' && operator) {
+        result[result.length - 1] = operator(result.at(-1) as number, token);
+      } else {
+        result.push(token);
       }
-    } else if (operator) {
-      // 두번째 연산자면 계산
-      result[result.length - 1] = operator(result[result.length - 1], token);
-      operator = null;
     } else {
-      result.push(token); // 첫 번째 연산자면 result 배열에 삽입
+      if (isSecondaryOpcode(token) && typeof token === 'string') {
+        if (token in oper) {
+          operator = oper[token];
+        }
+      } else if (typeof token === 'number' && operator) {
+        result[result.length - 1] = operator(result.at(-1) as number, token);
+      } else {
+        result.push(token);
+      }
     }
   }
+
   return result;
 }
 
+function isPrimaryOperator(
+  oper: PrimaryOperator | SecondaryOperator
+): oper is PrimaryOperator {
+  return Reflect.has(oper, '*') || Reflect.has(oper, '/');
+}
+
+function isPrimaryOpcode(token: Token): token is PrimaryOpcode {
+  const validOpcodes = ['*', '/'];
+
+  return typeof token === 'string' && validOpcodes.includes(token);
+}
+
+function isSecondaryOpcode(token: Token): token is SecondaryOpcode {
+  const validOpcodes = ['+', '-'];
+
+  return typeof token === 'string' && validOpcodes.includes(token);
+}
+
 export function calculate(tokens: (number | string)[]): number {
-  // [123,'+',24,'*',32]
   for (let i = 0; i < priority.length; i++) {
-    // 우선순위 2회 들어감
     while (tokens.length > 1) {
-      // tokens가 1일 때까지 동작
       const newToken = calOper(tokens, priority[i]);
 
       tokens = newToken;
-      if (tokens.length === newToken.length) break; // 우선순위 연산 끝난 후 로직 나오기
+      if (tokens.length === newToken.length) break;
     }
   }
   if (typeof tokens[0] === 'number') {

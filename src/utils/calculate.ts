@@ -33,20 +33,18 @@ export function calOper(
   for (const token of expr) {
     if (isPrimaryOperator(oper)) {
       if (isPrimaryOpcode(token) && typeof token === 'string') {
-        if (token in oper) {
-          operator = oper[token];
-        }
+        operator = oper[token];
       } else if (typeof token === 'number' && operator) {
         result[result.length - 1] = operator(result.at(-1) as number, token);
+        operator = null;
       } else {
         result.push(token);
       }
     } else {
       if (isSecondaryOpcode(token) && typeof token === 'string') {
-        if (token in oper) {
-          operator = oper[token];
-        }
+        operator = oper[token];
       } else if (typeof token === 'number' && operator) {
+        // 사칙연산자의 우선순위가 낮은 연산자의 경우 null을 사용하지 않아도 됨
         result[result.length - 1] = operator(result.at(-1) as number, token);
       } else {
         result.push(token);
@@ -64,29 +62,26 @@ function isPrimaryOperator(
 }
 
 function isPrimaryOpcode(token: Token): token is PrimaryOpcode {
-  const validOpcodes = ['*', '/'];
-
-  return typeof token === 'string' && validOpcodes.includes(token);
+  return typeof token === 'string' && ['*', '/'].includes(token);
 }
 
 function isSecondaryOpcode(token: Token): token is SecondaryOpcode {
-  const validOpcodes = ['+', '-'];
-
-  return typeof token === 'string' && validOpcodes.includes(token);
+  return typeof token === 'string' && ['+', '-'].includes(token);
 }
 
 export function calculate(tokens: (number | string)[]): number {
+  // for...of 쓰는 것을 추천함
   for (let i = 0; i < priority.length; i++) {
-    while (tokens.length > 1) {
+    while (tokens.length) {
       const newToken = calOper(tokens, priority[i]);
 
-      tokens = newToken;
       if (tokens.length === newToken.length) break;
+      tokens = newToken;
     }
   }
+
   if (typeof tokens[0] === 'number') {
     return tokens[0];
-  } else {
-    throw new Error('result cannot be string');
   }
+  throw new Error('result cannot be string');
 }
